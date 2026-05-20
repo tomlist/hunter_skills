@@ -16,6 +16,10 @@ tasks:
     status: done
     summary: "Skills already in sync (no changes detected). Updated CLAUDE.md with skills inventory table, task.yaml workflow, syncing instructions, and corrections (SKILL.md not instructions.md)."
   - id: 5
+    content: "git-add-commit 中的Co-Authored-By 去掉邮箱：<noreply@anthropic.com>"
+    status: done
+    summary: "Removed <noreply@anthropic.com> email from Co-Authored-By format. Updated both repo and ~/.claude/skills/ copies."
+  - id: 6
     content: ""
     status: pending
     summary: ""
