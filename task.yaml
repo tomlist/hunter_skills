@@ -1,0 +1,9 @@
+tasks:
+  - id: 1
+    content: "将当前用户的claude的skill同步到当前目录"
+    status: done
+    summary: "Synced 12 skills from ~/.claude/skills/ to ./claude/: git-add-commit, go, keil, pdf, pdf-reading, pyenv, stm32cubeide-build, stm32cubeide-flash, stm32cubeide-uart-verify, stm32mp135-task-build-flash-verify, utf8-convert, vscode-cpp-tag"
+  - id: 2
+    content: ""
+    status: pending
+    summary: ""
