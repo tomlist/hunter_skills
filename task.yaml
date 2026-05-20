@@ -8,6 +8,10 @@ tasks:
     status: done
     summary: "Updated git-add-commit SKILL.md to require dynamic Co-Authored-By based on actual model (instead of hardcoded Claude Opus 4.7). Synced back to ~/.claude/skills/."
   - id: 3
+    content: "Co-Authored-By 中agent名称加上agent的版本号"
+    status: done
+    summary: "Updated Co-Authored-By format to include agent version (e.g. Claude Code v2.1.141). Agent should run claude --version to get the actual version. Synced back to ~/.claude/skills/."
+  - id: 4
     content: ""
     status: pending
     summary: ""
