@@ -4,6 +4,10 @@ tasks:
     status: done
     summary: "Synced 12 skills from ~/.claude/skills/ to ./claude/: git-add-commit, go, keil, pdf, pdf-reading, pyenv, stm32cubeide-build, stm32cubeide-flash, stm32cubeide-uart-verify, stm32mp135-task-build-flash-verify, utf8-convert, vscode-cpp-tag"
   - id: 2
+    content: "更新当前用的git-add-commit 这个skill在填写commit message时， Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com> 这个改成agent和当前使用的大模型。 目前使用的大模型不是Opus4.7"
+    status: done
+    summary: "Updated git-add-commit SKILL.md to require dynamic Co-Authored-By based on actual model (instead of hardcoded Claude Opus 4.7). Synced back to ~/.claude/skills/."
+  - id: 3
     content: ""
     status: pending
     summary: ""

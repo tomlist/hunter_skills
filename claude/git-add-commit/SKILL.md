@@ -71,5 +71,6 @@ Rules:
 - Use `!` after type or scope only for breaking changes, for example `fix(api)!: ...`.
 - For breaking changes, include a commit body line beginning with `BREAKING CHANGE:`.
 - Do not use vague messages like `update`, `changes`, or `fix bug`.
+- Every commit message must end with a `Co-Authored-By` trailer. Use the actual agent name and model from the current session (check the system prompt for the model name — e.g. "Claude Opus 4.7", "Claude Sonnet 4.6", "DeepSeek v4 Pro"). Do not hardcode a specific model. Format: `Co-Authored-By: <Agent Name> <Model> <noreply@anthropic.com>`
 
 Reference: https://platform.uno/docs/articles/uno-development/git-conventional-commits.html
