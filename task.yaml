@@ -12,6 +12,10 @@ tasks:
     status: done
     summary: "Updated Co-Authored-By format to include agent version (e.g. Claude Code v2.1.141). Agent should run claude --version to get the actual version. Synced back to ~/.claude/skills/."
   - id: 4
+    content: "同步当前用户的claude的skill同步到当前目录， 并更新CLAUDE.md"
+    status: done
+    summary: "Skills already in sync (no changes detected). Updated CLAUDE.md with skills inventory table, task.yaml workflow, syncing instructions, and corrections (SKILL.md not instructions.md)."
+  - id: 5
     content: ""
     status: pending
     summary: ""
