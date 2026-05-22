@@ -1,6 +1,6 @@
 ---
 name: stm32cubeide-flash
-description: Flash prebuilt STM32CubeIDE firmware to an STM32 target using OpenOCD over CMSIS-DAP/SWD. Requires the project to be built first. Usage: /stm32cubeide-flash [release] [firmware=<path>]
+description: Flash prebuilt STM32CubeIDE firmware to an STM32 target using OpenOCD over CMSIS-DAP/SWD. Requires the project to be built first. Usage: /stm32cubeide-flash [release] [firmware=<path>] [clone]
 ---
 
 Flash an already-built STM32CubeIDE firmware binary to the target board using OpenOCD. Follow these steps:
@@ -8,11 +8,22 @@ Flash an already-built STM32CubeIDE firmware binary to the target board using Op
 ## 1. Parse arguments
 
 The user may pass arguments after `/stm32cubeide-flash`. Recognised keywords (case-insensitive):
+- `clone` → copy the flash script to the current working directory, then stop
 - `release` or `-release` → pass `-Configuration Release` to the script
 - `debug` or `-debug` → pass `-Configuration Debug` to the script (default)
 - `firmware=<path>` or `-firmware <path>` → pass `-FirmwarePath <path>` to the script
 
-## 2. Verify the project
+## 2. Handle clone
+
+If the user passed `clone`, copy the flash script to the current working directory and stop:
+
+```
+Copy-Item -Path "D:\work\ai\hunter_skills\claude\stm32cubeide-flash\scripts\flash-stm32cubeide-project.ps1" -Destination "<cwd>\flash-stm32cubeide-project.ps1"
+```
+
+Report the copied file path to the user. Do not proceed to flash.
+
+## 3. Verify the project
 
 Check that the current working directory looks like an STM32CubeIDE project by looking for at least one of:
 - A `.project` file
@@ -21,7 +32,7 @@ Check that the current working directory looks like an STM32CubeIDE project by l
 
 If none of these exist, tell the user this does not appear to be an STM32CubeIDE project and stop.
 
-## 3. Run the flash script
+## 4. Run the flash script
 
 The bundled script is at:
 ```
@@ -40,7 +51,7 @@ Where `[flags]` is any combination of:
 
 Use the current working directory as `-ProjectRoot`.
 
-## 4. Report results
+## 5. Report results
 
 Show the key summary lines from the output:
 - Configuration, OpenOCD path, Firmware path and size

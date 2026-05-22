@@ -1,6 +1,6 @@
 ---
 name: stm32cubeide-build
-description: Build STM32CubeIDE-generated embedded projects without opening the IDE. Handles ARM toolchain discovery, Windows make quirks, and objects.list generation. Usage: /stm32cubeide-build [rebuild] [release]
+description: Build STM32CubeIDE-generated embedded projects without opening the IDE. Handles ARM toolchain discovery, Windows make quirks, and objects.list generation. Usage: /stm32cubeide-build [rebuild] [release] [clone]
 ---
 
 Build an STM32CubeIDE-generated project in the current working directory. Follow these steps:
@@ -8,11 +8,22 @@ Build an STM32CubeIDE-generated project in the current working directory. Follow
 ## 1. Parse arguments
 
 The user may pass arguments after `/stm32cubeide-build`. Recognised keywords (case-insensitive):
+- `clone` → copy the build script to the current working directory, then stop
 - `rebuild` or `-rebuild` or `clean` → pass `-Clean` to the script (remove generated outputs before building)
 - `release` or `-release` → pass `-Configuration Release` to the script
 - `debug` or `-debug` → pass `-Configuration Debug` to the script (default)
 
-## 2. Verify the project
+## 2. Handle clone
+
+If the user passed `clone`, copy the build script to the current working directory and stop:
+
+```
+Copy-Item -Path "D:\work\ai\hunter_skills\claude\stm32cubeide-build\scripts\build-stm32cubeide-project.ps1" -Destination "<cwd>\build-stm32cubeide-project.ps1"
+```
+
+Report the copied file path to the user. Do not proceed to build.
+
+## 3. Verify the project
 
 Check that the current working directory looks like an STM32CubeIDE project by looking for at least one of:
 - A `.project` file
@@ -21,7 +32,7 @@ Check that the current working directory looks like an STM32CubeIDE project by l
 
 If none of these exist, tell the user this does not appear to be an STM32CubeIDE project and stop.
 
-## 3. Run the build script
+## 4. Run the build script
 
 The bundled script is at:
 ```
@@ -40,7 +51,7 @@ Where `[flags]` is any combination of:
 
 Use the current working directory as `-ProjectRoot`.
 
-## 4. Report results
+## 5. Report results
 
 Show the key summary lines from the output:
 - Configuration, Make, Toolchain, Artifact path and size
