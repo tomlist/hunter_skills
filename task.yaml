@@ -20,6 +20,11 @@ tasks:
     status: done
     summary: "Removed <noreply@anthropic.com> email from Co-Authored-By format. Updated both repo and ~/.claude/skills/ copies."
   - id: 6
+    content: "给go这个skill中的task.yaml模板，增加：任务的创建时间create_time。已经存在的任务就不用添加了。"
+    status: done
+    summary: "Added create_time field to go skill's task.yaml template in SKILL.md (init template, structure docs, and append-new-task section). Synced to both ~/.claude/skills/go/ and ./claude/go/. Existing tasks unchanged."
+  - id: 7
     content: ""
     status: pending
     summary: ""
+    create_time: "2026-05-22T15:30:00+08:00"

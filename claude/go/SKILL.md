@@ -14,6 +14,7 @@ If the argument is `init`:
          content: ""
          status: pending
          summary: ""
+         create_time: ""
      ```
    - Tell the user the file has been created and they can edit `content` to add their first task.
    - Stop.
@@ -26,6 +27,7 @@ tasks:
     content: <what to do>
     status: <pending|in_progress|done|failed>
     summary: <completion summary, filled in after task completes>
+    create_time: <ISO 8601 timestamp, set when task is first created>
 ```
 
 Execute the following workflow:
@@ -43,6 +45,7 @@ Execute the following workflow:
    - `content`: ""
    - `status`: pending
    - `summary`: ""
+   - `create_time`: current ISO 8601 timestamp (e.g. 2026-05-22T14:30:00+08:00)
    This placeholder makes it easy for the user to edit and add the next task.
 
 If `task.yaml` does not exist, tell the user and stop.
