@@ -1,6 +1,6 @@
 ---
 name: keil
-description: Build and flash Keil MDK projects. Usage: /keil [build|rebuild|flash|build-flash|rebuild-flash] [project=<name>]
+description: Build and flash Keil MDK projects. Usage: /keil [build|rebuild|flash|build-flash|rebuild-flash] [project=<name>] [clone]
 ---
 
 You are helping the user build and/or flash Keil MDK (uVision) firmware. Follow these steps:
@@ -17,10 +17,21 @@ The user may pass arguments after `/keil`. Recognised keywords (case-insensitive
 - `rebuild-flash` — clean rebuild then flash
 
 **Options**:
+- `clone` — copy the build/flash script (`do.ps1`) to the current working directory, then stop
 - `project=<name>` — specify project by filename (without extension) when multiple Keil projects exist
   - Matches `.uvprojx` or `.uvproj` files containing `<name>` in the filename
 
-## 2. Locate the Keil project
+## 2. Handle clone
+
+If the user passed `clone`, create the build/flash script in the current working directory and stop.
+
+Create `do.ps1` using the Write tool with the template shown in step 5 (Ensure do.ps1 exists). The template contains `<REL_PROJ_PATH>` and `<TARGET_NAME>` placeholders — since the user will fill these in later, keep the placeholders as-is. Do not proceed to build or flash.
+
+Report the created file path to the user and remind them to:
+- Edit `<REL_PROJ_PATH>` to point to their Keil project file
+- Edit `<TARGET_NAME>` to match their Keil project target
+
+## 3. Locate the Keil project
 
 Search the current working directory (recursively) for `*.uvprojx` and `*.uvproj` files using the Glob tool.
 
@@ -32,13 +43,13 @@ Search the current working directory (recursively) for `*.uvprojx` and `*.uvproj
 Let `$projFile` = the absolute path to the project file.
 Let `$repoRoot` = the current working directory (where the user invoked the skill).
 
-## 3. Extract the target name
+## 4. Extract the target name
 
 Read the project file and find the first `<TargetName>` element. Use that string as `$target`.
 
-## 4. Ensure build.ps1 exists in $repoRoot
+## 5. Ensure do.ps1 exists in $repoRoot
 
-Check whether `build.ps1` exists in `$repoRoot`.
+Check whether `do.ps1` exists in `$repoRoot`.
 
 If it does **not** exist, create it with the Write tool using the template below.
 Substitute the actual relative path from `$repoRoot` to `$projFile` for `<REL_PROJ_PATH>`,
@@ -102,12 +113,12 @@ if ($Flash) {
 }
 ```
 
-## 5. Run build.ps1
+## 6. Run do.ps1
 
 Use the Bash tool to run:
 
 ```
-powershell -ExecutionPolicy Bypass -File "<repoRoot>/build.ps1" [flags]
+powershell -ExecutionPolicy Bypass -File "<repoRoot>/do.ps1" [flags]
 ```
 
 Where `[flags]` depends on the action:
@@ -119,7 +130,7 @@ Where `[flags]` depends on the action:
 | `build-flash` | `-Flash` |
 | `rebuild-flash` | `-Rebuild -Flash` |
 
-## 6. Report results
+## 7. Report results
 
 Show the key lines from the output (especially errors/warnings) and the final `[OK]`/`[WARN]`/`[FAIL]` status. If flashing failed, remind the user to check debug adapter connection.
 

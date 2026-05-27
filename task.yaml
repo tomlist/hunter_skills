@@ -24,7 +24,35 @@ tasks:
     status: done
     summary: "Added create_time field to go skill's task.yaml template in SKILL.md (init template, structure docs, and append-new-task section). Synced to both ~/.claude/skills/go/ and ./claude/go/. Existing tasks unchanged."
   - id: 7
+    content: "给keil这个skill增加clone参数： 将编译和烧写脚本复制到当前目录，并且默认行为是编译和烧写在一个脚本do.ps1"
+    status: done
+    summary: "Added clone option to keil skill: added clone to recognized options, new step 2 (Handle clone) creates do.ps1 in cwd with placeholders and stops, renamed build.ps1 → do.ps1 throughout. Synced to ~/.claude/skills/keil/."
+    create_time: "2026-05-22T15:30:00+08:00"
+  - id: 8
+    content: "更新go这个skill， create_time字段改为time字段，包含一个列表，列表中包括: create, finish. 即创建时间和完成时间"
+    status: done
+    summary: "Updated go skill SKILL.md: replaced create_time with time object containing create and finish fields. Updated init template, structure docs, workflow steps, and append-new-task section. Synced to both ~/.claude/skills/go/ and ./claude/go/."
+    time:
+      start: "2026-05-22T16:05:00+08:00"
+      finish: "2026-05-25T10:00:00+08:00"
+  - id: 9
+    content: "将go中的time中的create改为start，即开始处理的时间"
+    status: done
+    summary: "Renamed time.create to time.start throughout go skill SKILL.md (init template, structure docs, append section) and task.yaml. Updated description to 'set when task processing begins'. Synced to both copies."
+    time:
+      start: "2026-05-25T10:00:00+08:00"
+      finish: "2026-05-25T10:05:00+08:00"
+  - id: 10
+    content: "将go中的time的时间，取值为当前系统显示的时间。"
+    status: done
+    summary: "Updated go skill workflow step 2a to set time.start to current system time when task begins processing. Fixed lingering `create`→`start` in step 4 append section (was missed due to backtick formatting). Synced to both copies."
+    time:
+      start: "2026-05-25T10:05:00+08:00"
+      finish: "2026-05-26T16:22:25+08:00"
+  - id: 11
     content: ""
     status: pending
     summary: ""
-    create_time: "2026-05-22T15:30:00+08:00"
+    time:
+      start: "2026-05-26T16:22:25+08:00"
+      finish: ""

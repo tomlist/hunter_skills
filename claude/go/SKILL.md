@@ -14,7 +14,9 @@ If the argument is `init`:
          content: ""
          status: pending
          summary: ""
-         create_time: ""
+         time:
+           start: ""
+           finish: ""
      ```
    - Tell the user the file has been created and they can edit `content` to add their first task.
    - Stop.
@@ -27,25 +29,30 @@ tasks:
     content: <what to do>
     status: <pending|in_progress|done|failed>
     summary: <completion summary, filled in after task completes>
-    create_time: <ISO 8601 timestamp, set when task is first created>
+    time:
+      start: <ISO 8601 timestamp, set when task processing begins>
+      finish: <ISO 8601 timestamp, set when task completes>
 ```
 
 Execute the following workflow:
 
 1. Parse `task.yaml` and identify all tasks where `status` is `pending`.
 2. For each pending task (in order by id):
-   a. Update its `status` to `in_progress` in `task.yaml`.
+   a. Update its `status` to `in_progress` in `task.yaml`, and set `time.start` to the current system time.
    b. Execute the task described in `content`.
    c. After completion, update `status` to `done` (or `failed` if it could not be completed).
    d. Write a concise `summary` describing what was actually done (or why it failed).
-   e. Save `task.yaml` after each task so progress is persisted.
+   e. Set `time.finish` to the current ISO 8601 timestamp.
+   f. Save `task.yaml` after each task so progress is persisted.
 3. After all tasks are processed, report a final summary table showing each task id, status, and summary.
 4. After completing all tasks (including if there were no pending tasks), append a new empty task to `task.yaml` with:
    - `id`: next integer after the current maximum id
    - `content`: ""
    - `status`: pending
    - `summary`: ""
-   - `create_time`: current ISO 8601 timestamp (e.g. 2026-05-22T14:30:00+08:00)
+   - `time`:
+     - `start`: current ISO 8601 timestamp (e.g. 2026-05-22T14:30:00+08:00)
+     - `finish`: ""
    This placeholder makes it easy for the user to edit and add the next task.
 
 If `task.yaml` does not exist, tell the user and stop.
