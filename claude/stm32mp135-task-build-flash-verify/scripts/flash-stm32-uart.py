@@ -22,13 +22,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-root", default=".", help="Repository root used to resolve relative paths")
     parser.add_argument(
         "--project-dir",
-        default="STM32MP135C-DK_DDR_UTILITIES_A7",
-        help="Project directory under the repo root",
+        default=".",
+        help="Project directory under the repo root (default: repo root itself)",
     )
     parser.add_argument(
         "--image-name",
-        default="STM32MP135C-DK_DDR_UTILITIES_A7.stm32",
-        help="Default image file name under <project-dir>/build",
+        default="",
+        help="Image file name relative to project-dir (default: auto-detect)",
     )
     parser.add_argument(
         "--image-src",
@@ -234,9 +234,13 @@ def main() -> int:
 
     repo_root = Path(args.repo_root).resolve()
     project_dir = resolve_path(repo_root, args.project_dir)
-    image_src = resolve_path(project_dir / "build", args.image_name)
+
     if args.image_src:
         image_src = resolve_path(repo_root, args.image_src)
+    elif args.image_name:
+        image_src = resolve_path(project_dir, args.image_name)
+    else:
+        raise SystemExit("Error: specify --image-src or --image-name to locate the .stm32 file.")
     image_dst = resolve_path(repo_root, args.image_dst)
     log_dir = resolve_path(repo_root, args.log_dir)
     active_level = args.reset_active_level == "high"

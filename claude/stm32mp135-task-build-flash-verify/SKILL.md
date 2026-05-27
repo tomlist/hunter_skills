@@ -1,13 +1,13 @@
 ---
 name: stm32mp135-task-build-flash-verify
-description: Build, flash, and verify the STM32MP135 DDR utility project by executing task.yaml items, generating the .stm32 image, flashing over UART, and monitoring serial output for the benchmark completion marker. Use when working in an STM32MP135 DDR utility repository with task.yaml items mentioning build/编译, flash/烧写/下载, or UART verification.
+description: Build, flash, and verify STM32MP135 firmware projects. Handles STM32CubeIDE build (auto-discovers Application/ subdirectory), STM32 header generation (.stm32), UART flashing via STM32_Programmer_CLI, and serial output monitoring. Use when working with STM32MP135 bare-metal/Cortex-A7 projects.
 ---
 
 Work from the repository root. Follow these steps:
 
 ## 1. Read task state
 
-Read the repo-root `task.yaml` and select only items where `completed` is `false`. Execute them in list order. Mark `completed: true` only after every required action for that task succeeds. Leave failed tasks as `false` and report the exact blocker.
+Read the repo-root `task.yaml` and select only items where `completed` is `false` (or `status` is `pending`). Execute them in list order. Mark the task done only after every required action succeeds.
 
 ## 2. Interpret task text
 
@@ -22,22 +22,33 @@ Read the repo-root `task.yaml` and select only items where `completed` is `false
 Run the bundled build script with the Bash tool:
 
 ```
-pwsh -ExecutionPolicy Bypass -File "C:\Users\tomli\.claude\skills\stm32mp135-task-build-flash-verify\scripts\build-stm32-image.ps1" -RepoRoot "<cwd>" -ProjectDir STM32MP135C-DK_DDR_UTILITIES_A7 -Clean -GenStm32
+pwsh -ExecutionPolicy Bypass -File "C:\Users\tomli\.claude\skills\stm32mp135-task-build-flash-verify\scripts\build-stm32-image.ps1" -RepoRoot "<cwd>" -Clean -GenStm32
 ```
 
-Expected artifact: `<ProjectDir>\build\STM32MP135C-DK_DDR_UTILITIES_A7.stm32`
+The build script:
+- Auto-discovers the build directory: checks `<project>/Debug/makefile` and `<project>/Application/Debug/makefile` (and Release variants)
+- Auto-discovers the ARM toolchain from `C:\ST\STM32CubeCLT_*` or `C:\ST\STM32CubeIDE_*`
+- Auto-discovers `make.exe` from GnuWin32 or PATH
+- Reconstructs `objects.list` from subdir.mk files before building
+- If `-GenStm32`, runs `Scripts/imageheader/postbuild.ps1` to add the STM32 V2.0 header
 
-Use `-DryRun` first when validating a new repository layout. Override `-ProjectDir` or `-BuildScript` for non-default layouts.
+Key parameters:
+- `-RepoRoot <path>` — the repository/project root (default: current directory)
+- `-ProjectDir <name>` — subdirectory containing the project (default: "." for repo root)
+- `-Clean` — remove generated outputs before building
+- `-GenStm32` — generate .stm32 image with STM32 header after linking
+- `-Configuration Release` — build Release instead of Debug
+- `-DryRun` — print resolved paths and exit without building
+
+Use `-DryRun` first when working with a new project layout.
 
 ## 4. Flash and monitor
 
-Run the bundled flash script with the Bash tool (requires `pyserial` — install with `pip install pyserial` if missing):
+Run the bundled flash script (requires `pyserial` — install with `pip install pyserial` if missing):
 
 ```
-python "C:\Users\tomli\.claude\skills\stm32mp135-task-build-flash-verify\scripts\flash-stm32-uart.py" COM4 --repo-root "<cwd>" --project-dir STM32MP135C-DK_DDR_UTILITIES_A7
+python "C:\Users\tomli\.claude\skills\stm32mp135-task-build-flash-verify\scripts\flash-stm32-uart.py" COM4 --repo-root "<cwd>" --project-dir . --image-name "Application\Debug\sram_test_Application.stm32"
 ```
-
-Replace `COM4` with the requested port.
 
 The script:
 1. Copies the generated image to repo-root `test.stm32`
@@ -50,22 +61,26 @@ The script:
 Common overrides:
 - `--no-monitor` — skip UART monitoring
 - `--monitor-seconds 900` — extend the timeout
-- `--image-src path\to\custom.stm32` — use an explicit image
+- `--image-src path\to\custom.stm32` — use an explicit image path
+- `--image-name <path>` — relative path from project dir to the .stm32 file
+- `--project-dir .` — when the project is at the repo root
+- `--done-marker <text>` — custom completion marker
 
 ## 5. Verify results
 
 - Check command exit codes
 - Confirm the `.stm32` artifact exists when the task requires image generation
 - Check the newest file in `logs\` when serial verification is required
-- `<<<DDR_BENCHMARK_DONE>>>` in the log means the benchmark completed successfully
+- The done marker in the log means the benchmark completed successfully
 
 ## 6. Update task.yaml
 
-After a task succeeds, write `completed: true` back to `task.yaml`. Do not reorder or modify other task descriptions.
+After a task succeeds, mark it completed in `task.yaml`. Do not reorder or modify other task descriptions.
 
 ## Notes
 
 - `STM32_Programmer_CLI.exe` must be on PATH (installed via STM32CubeProgrammer)
 - Default flash baud rate: `921600`; default monitor baud rate: `115200`
 - If `STM32_Programmer_CLI` is missing, report it and stop — do not guess an install path
-- Report missing COM ports, build failures, flash failures, and monitor timeouts with the failing command and relevant artifact/log path
+- If no `Debug/makefile` or `Release/makefile` exists, the project must be generated from STM32CubeIDE first (use `stm32cubeidec.exe` headless import+build)
+- The flash script can flash any `.stm32` image; it is not tied to a specific project structure

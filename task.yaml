@@ -50,9 +50,16 @@ tasks:
       start: "2026-05-25T10:05:00+08:00"
       finish: "2026-05-26T16:22:25+08:00"
   - id: 11
+    content: "将当前用户的claude的skill同步到当前目录"
+    status: done
+    summary: "Synced stm32mp135-task-build-flash-verify from ~/.claude/skills/ to ./claude/ (updated SKILL.md, build-stm32-image.ps1, flash-stm32-uart.py, added scripts/imageheader/). Updated CLAUDE.md description to reflect broader firmware scope."
+    time:
+      start: "2026-05-27T18:01:29+08:00"
+      finish: "2026-05-27T18:01:29+08:00"
+  - id: 12
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-05-26T16:22:25+08:00"
+      start: "2026-05-27T18:01:29+08:00"
       finish: ""
