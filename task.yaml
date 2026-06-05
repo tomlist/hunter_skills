@@ -57,9 +57,16 @@ tasks:
       start: "2026-05-27T18:01:29+08:00"
       finish: "2026-05-27T18:01:29+08:00"
   - id: 12
+    content: "增加skill，名称为：cl, 功能是：将../andrej-karpathy-skills/CLAUDE.md 复制到当前工程"
+    status: done
+    summary: "Created cl skill (claude/cl/SKILL.md) that copies ../andrej-karpathy-skills/CLAUDE.md to the current working directory. Synced to ~/.claude/skills/cl/."
+    time:
+      start: "2026-06-05T10:00:00+08:00"
+      finish: "2026-06-05T17:00:00+08:00"
+  - id: 13
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-05-27T18:01:29+08:00"
+      start: "2026-06-05T17:00:00+08:00"
       finish: ""
