@@ -64,9 +64,30 @@ tasks:
       start: "2026-06-05T10:00:00+08:00"
       finish: "2026-06-05T17:00:00+08:00"
   - id: 13
+    content: "给go这个skill增加clear参数：整理task.yaml，删除content为空的非占位任务项，并重新编号。只保留最后一个占位任务可以为空。"
+    status: done
+    summary: "Added `clear` parameter to go skill SKILL.md. Clear logic: removes tasks with empty content except the last placeholder, then renumbers sequentially from the first deletion point without modifying other fields. Also updated task-input exclusion to skip `clear`. Synced to ~/.claude/skills/go/."
+    time:
+      start: "2026-06-16T16:00:00+08:00"
+      finish: "2026-06-16T17:00:00+08:00"
+  - id: 14
+    content: "更新go这个skill，当从终端创建任务时，在task.yaml创建任务内容后，直接执行任务，不需要在终端显示/go"
+    status: done
+    summary: "Modified both follow-up (step 3d) and new task (step 4e) branches in go SKILL.md: replaced 'Stop' with 'Proceed to Execute pending tasks below' so tasks created via terminal input are executed immediately without requiring a separate /go invocation. Synced to ~/.claude/skills/go/."
+    time:
+      start: "2026-06-16T17:05:00+08:00"
+      finish: "2026-06-16T17:10:00+08:00"
+  - id: 15
+    content: "更新/go <描述>：向task.yaml添加任务时，如果最后一个任务是空占位符，则填入该占位符而非创建新任务"
+    status: done
+    summary: "Added placeholder-reuse logic to go SKILL.md step 4a: if the most recent task (highest id) has empty content, fill it in place instead of appending a new task. Otherwise fall through to the existing append logic (step 4b). Updated the prompt below to step c. Synced to ~/.claude/skills/go/."
+    time:
+      start: "2026-06-16T17:15:00+08:00"
+      finish: "2026-06-16T17:20:00+08:00"
+  - id: 16
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-06-05T17:00:00+08:00"
+      start: "2026-06-16T17:20:00+08:00"
       finish: ""
