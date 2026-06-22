@@ -23,7 +23,7 @@ This repository contains custom Claude Code skills (slash commands). Each skill 
 | `stm32cubeide-build` | PowerShell | Build STM32CubeIDE projects |
 | `stm32cubeide-flash` | PowerShell | Flash firmware via OpenOCD |
 | `stm32cubeide-uart-verify` | PowerShell | Verify UART output against patterns |
-| `stm32mp135-task-build-flash-verify` | PS + Python | Build, flash, verify STM32MP135 bare-metal firmware |
+| `stm32mp135_build_flash` | PS + Python | Build, flash, verify STM32MP135 bare-metal firmware |
 | `utf8-convert` | PowerShell | Convert files to UTF-8 encoding |
 | `vscode-cpp-tag` | Python | Generate VS Code C++ IntelliSense configs |
 

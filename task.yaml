@@ -85,9 +85,16 @@ tasks:
       start: "2026-06-16T17:15:00+08:00"
       finish: "2026-06-16T17:20:00+08:00"
   - id: 16
+    content: "根据stm32_mp135_skill.md和stm32_mp135_skill_step.txt 优化skill: stm32mp135-task-build-flash-verify — 将脚本重构为模块化架构（find-toolchain / build-elf / gen-stm32-header / flash-target / monitor-uart），每个脚本单一职责，更新SKILL.md"
+    status: done
+    summary: "Refactored stm32mp135-task-build-flash-verify skill from 2 monolithic scripts (build-stm32-image.ps1, flash-stm32-uart.py) to 5 single-responsibility scripts: find-toolchain.ps1 (locate GCC+make), build-elf.ps1 (make → .elf only), gen-stm32-header.ps1 (wrap postbuild → .stm32), flash-target.ps1 (flash only, Windows), monitor-uart.py (serial monitor only, Windows). Updated postbuild.ps1 with -DryRun support and safer path resolution. Rewrote SKILL.md with modular architecture docs, clone mode, and cross-cutting design rules. All scripts verified with dry-run tests. Synced to ~/.claude/skills/."
+    time:
+      start: "2026-06-22T17:00:00+08:00"
+      finish: "2026-06-22T17:30:00+08:00"
+  - id: 17
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-06-16T17:20:00+08:00"
+      start: "2026-06-22T17:30:00+08:00"
       finish: ""
