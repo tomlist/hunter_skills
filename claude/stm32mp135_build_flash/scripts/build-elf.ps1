@@ -96,7 +96,19 @@ if ($DryRun) {
 }
 
 # -------------------------------------------------------------------
-# Rebuild objects.list from subdir.mk files
+# Clean if requested
+# -------------------------------------------------------------------
+if ($Clean) {
+    Write-Host "Cleaning generated outputs in $buildDir"
+    Get-ChildItem -LiteralPath $buildDir -Recurse -File | Where-Object {
+        $_.Name -eq "default.size.stdout" -or $_.Extension -in @(".o", ".d", ".su", ".cyclo", ".elf", ".map", ".list")
+    } | Remove-Item -Force -ErrorAction SilentlyContinue
+    # Run make clean
+    & $MakeExe "SHELL=cmd.exe" "-C" $buildDir "clean" "-j" $Jobs
+}
+
+# -------------------------------------------------------------------
+# Rebuild objects.list from subdir.mk files (after clean, before build)
 # -------------------------------------------------------------------
 Write-Host "Rebuilding objects.list from subdir.mk files..."
 
@@ -124,18 +136,6 @@ if ($objectPaths.Count -eq 0) {
 $objectsListPath = Join-Path $buildDir "objects.list"
 Set-Content -LiteralPath $objectsListPath -Value ($objectPaths | ForEach-Object { '"' + $_ + '"' }) -Encoding ascii
 Write-Host "Objects list  : $objectsListPath ($($objectPaths.Count) objects)"
-
-# -------------------------------------------------------------------
-# Clean if requested
-# -------------------------------------------------------------------
-if ($Clean) {
-    Write-Host "Cleaning generated outputs in $buildDir"
-    Get-ChildItem -LiteralPath $buildDir -Recurse -File | Where-Object {
-        $_.Name -eq "default.size.stdout" -or $_.Extension -in @(".o", ".d", ".su", ".cyclo", ".elf", ".map", ".list")
-    } | Remove-Item -Force -ErrorAction SilentlyContinue
-    # Run make clean
-    & $MakeExe "SHELL=cmd.exe" "-C" $buildDir "clean" "-j" $Jobs
-}
 
 # -------------------------------------------------------------------
 # Build

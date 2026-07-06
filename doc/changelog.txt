@@ -1,0 +1,86 @@
+2026-06-22  hunter — feat(stm32mp135): refactor to modular scripts with clone wrappers
+  M CLAUDE.md
+  M claude/go/SKILL.md
+  + claude/stm32mp135_build_flash/do.ps1
+  + claude/stm32mp135_build_flash/do.sh
+  + claude/stm32mp135_build_flash/scripts/build-elf.ps1
+  + claude/stm32mp135_build_flash/scripts/find-toolchain.ps1
+  + claude/stm32mp135_build_flash/scripts/flash-target.ps1
+  + claude/stm32mp135_build_flash/scripts/gen-stm32-header.ps1
+  + claude/stm32mp135_build_flash/scripts/imageheader/postbuild.ps1
+  + claude/stm32mp135_build_flash/scripts/monitor-uart.py
+  + claude/stm32mp135_build_flash/SKILL.md
+  - claude/stm32mp135-task-build-flash-verify/scripts/build-stm32-image.ps1
+  - claude/stm32mp135-task-build-flash-verify/scripts/flash-stm32-uart.py
+  - claude/stm32mp135-task-build-flash-verify/scripts/imageheader/postbuild.ps1
+  M claude/stm32mp135-task-build-flash-verify/scripts/imageheader/Python3/Stm32ImageAddHeader.py
+  - claude/stm32mp135-task-build-flash-verify/SKILL.md
+  M task.yaml
+
+2026-06-16  hunter — feat(go): add clear command, auto-execute, and placeholder reuse
+  M claude/go/SKILL.md
+  M task.yaml
+
+2026-06-15  hunter — feat(go): add terminal task input with follow-up detection
+  M claude/go/SKILL.md
+
+2026-06-05  hunter — feat(cl): add cl skill to copy/append behavioral guidelines
+  M CLAUDE.md
+  + claude/cl/CLAUDE.md
+  + claude/cl/SKILL.md
+  M task.yaml
+
+2026-05-27  hunter — feat(go,keil): add time tracking with start/finish and clone parameter; feat(stm32mp135): sync updated build/flash skill from user skills
+  M CLAUDE.md
+  M claude/go/SKILL.md
+  M claude/keil/SKILL.md
+  M claude/stm32mp135-task-build-flash-verify/scripts/build-stm32-image.ps1
+  M claude/stm32mp135-task-build-flash-verify/scripts/flash-stm32-uart.py
+  + claude/stm32mp135-task-build-flash-verify/scripts/imageheader/postbuild.ps1
+  + claude/stm32mp135-task-build-flash-verify/scripts/imageheader/Python3/Stm32ImageAddHeader.py
+  M claude/stm32mp135-task-build-flash-verify/SKILL.md
+  M task.yaml
+
+2026-05-22  hunter — feat(stm32cubeide-build,stm32cubeide-flash): add clone parameter to copy scripts to cwd; @ feat(go): add create_time field to task.yaml template
+  M claude/go/SKILL.md
+  M claude/stm32cubeide-build/SKILL.md
+  M claude/stm32cubeide-flash/SKILL.md
+  M task.yaml
+
+2026-05-20  hunter — @ feat: sync 12 Claude Code skills to repository; @ fix(git-add-commit): use dynamic model name in Co-Authored-By trailer; @ fix(git-add-commit): include agent version in Co-Authored-By trailer; @ docs: update CLAUDE.md with skills inventory and task workflow; @ fix(git-add-commit): remove email from Co-Authored-By trailer format
+  + CLAUDE.md
+  + claude/git-add-commit/SKILL.md
+  + claude/go/SKILL.md
+  + claude/keil/SKILL.md
+  + claude/pdf-reading/LICENSE.txt
+  + claude/pdf-reading/REFERENCE.md
+  + claude/pdf-reading/SKILL.md
+  + claude/pdf/FORMS.md
+  + claude/pdf/LICENSE.txt
+  + claude/pdf/REFERENCE.md
+  + claude/pdf/scripts/check_bounding_boxes.py
+  + claude/pdf/scripts/check_fillable_fields.py
+  + claude/pdf/scripts/convert_pdf_to_images.py
+  + claude/pdf/scripts/create_validation_image.py
+  + claude/pdf/scripts/extract_form_field_info.py
+  + claude/pdf/scripts/extract_form_structure.py
+  + claude/pdf/scripts/fill_fillable_fields.py
+  + claude/pdf/scripts/fill_pdf_form_with_annotations.py
+  + claude/pdf/SKILL.md
+  + claude/pyenv/SKILL.md
+  + claude/stm32cubeide-build/scripts/build-stm32cubeide-project.ps1
+  + claude/stm32cubeide-build/SKILL.md
+  + claude/stm32cubeide-flash/scripts/flash-stm32cubeide-project.ps1
+  + claude/stm32cubeide-flash/SKILL.md
+  + claude/stm32cubeide-uart-verify/scripts/list-serial-ports.ps1
+  + claude/stm32cubeide-uart-verify/scripts/verify-stm32-uart-output.ps1
+  + claude/stm32cubeide-uart-verify/SKILL.md
+  + claude/stm32mp135-task-build-flash-verify/scripts/build-stm32-image.ps1
+  + claude/stm32mp135-task-build-flash-verify/scripts/flash-stm32-uart.py
+  + claude/stm32mp135-task-build-flash-verify/SKILL.md
+  + claude/utf8-convert/scripts/convert-to-utf8.ps1
+  + claude/utf8-convert/SKILL.md
+  + claude/vscode-cpp-tag/scripts/generate_vscode_cpp_config.py
+  + claude/vscode-cpp-tag/SKILL.md
+  + task.yaml
+

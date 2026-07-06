@@ -143,110 +143,50 @@ After a task succeeds, mark it completed in `task.yaml`. Do not reorder or modif
 
 ## 9. Clone mode
 
-Clone mode copies the skill scripts into the project directory and generates
-orchestration wrappers (`do.ps1` / `do.sh`) so engineers can build and flash
-with a single command. Use when the user asks to "clone", "copy build/flash
-scripts", or "set up standalone scripts".
+Clone mode copies the skill scripts into the project directory so engineers can run them directly without the skill being present. Use when the user asks to "clone", "copy build/flash scripts", or "set up standalone scripts".
 
-### What is created
+### What to copy
 
 ```
 <project-root>/
-├── do.ps1                     # Windows: build + flash + monitor
-├── do.sh                      # Linux: build only (.stm32 output)
 └── scripts/
     ├── find-toolchain.ps1
     ├── build-elf.ps1
     ├── gen-stm32-header.ps1
-    ├── flash-target.ps1       # Windows only
-    ├── monitor-uart.py        # Windows only
+    ├── flash-target.ps1          # Windows only
+    ├── monitor-uart.py           # Windows only
     └── imageheader/
         ├── postbuild.ps1
         └── Python3/
             └── Stm32ImageAddHeader.py
 ```
 
-### Clone steps
+### Verification after clone
 
-1. Copy `{skill_dir}/scripts/` → `<cwd>/scripts/`
-2. Copy `{skill_dir}/do.ps1` → `<cwd>/do.ps1`
-3. Copy `{skill_dir}/do.sh` → `<cwd>/do.sh`
-4. Run `pwsh do.ps1 -DryRun` to verify the project is discoverable.
-   If it fails, report the error and stop.
-
-### do.ps1 (Windows) — primary entry point
-
-Auto-discovers the build directory, builds, generates the STM32 header, flashes,
-and optionally monitors serial output.
-
-```
-pwsh do.ps1 [-Port USB1|COMx] [-Config Debug|Release] [-Clean] [-NoStart] [-NoMonitor] [-DryRun]
-```
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `-Port` | USB1 | Flash port: USB1 or COMx |
-| `-Config` | Debug | Build configuration |
-| `-Clean` | (switch) | Clean rebuild before make |
-| `-NoStart` | (switch) | Flash but do not start target |
-| `-NoMonitor` | (switch) | Skip UART monitor after flash |
-| `-MonitorOnly` | (switch) | Skip build+flash, only open UART monitor |
-| `-Baud` | 921600 | UART flash baud rate |
-| `-MonitorBaud` | 115200 | UART monitor baud rate |
-| `-DoneMarker` | `<<<DONE>>>` | Monitor completion marker |
-| `-Timeout` | 600 | Monitor timeout in seconds |
-| `-DryRun` | (switch) | Print actions without executing |
-
-### do.sh (Linux) — build only
-
-Builds the project and generates the `.stm32` image. Flashing is not supported
-on Linux (use do.ps1 on Windows).
-
-```
-bash do.sh [-Config Debug|Release] [-Clean] [-DryRun]
-```
+Run `pwsh scripts\find-toolchain.ps1 -DryRun` to confirm the toolchain is discoverable from the project root. If it fails, report the error and stop.
 
 ### Usage reminder to show the engineer
 
 ```powershell
-# --- Windows (PowerShell) ---
+# From the project root in PowerShell:
 
-# Build + flash via USB (most common)
-pwsh do.ps1
-
-# Build + flash via UART + monitor
-pwsh do.ps1 -Port COM4
-
-# Flash without monitor
-pwsh do.ps1 -NoMonitor
-
-# Clean rebuild
-pwsh do.ps1 -Clean
-
-# Only monitor (skip build+flash)
-pwsh do.ps1 -Port COM4 -MonitorOnly -DoneMarker "<<<BENCHMARK_DONE>>>"
-
-# Dry-run to check what will happen
-pwsh do.ps1 -DryRun
-```
-
-```bash
-# --- Linux ---
-bash do.sh
-bash do.sh -Clean
-bash do.sh -DryRun
-```
-
-### Advanced: individual scripts
-
-Engineers can run each script directly when they need fine-grained control:
-
-```powershell
+# 1. Check toolchain (optional)
 pwsh scripts\find-toolchain.ps1
+
+# 2. Build .elf
 pwsh scripts\build-elf.ps1 -Clean
+
+# 3. Generate .stm32 header
 pwsh scripts\gen-stm32-header.ps1 -ElfPath Application\Debug\myproject.elf
+
+# 4a. Flash via USB1 (most common)
 pwsh scripts\flash-target.ps1 -ImagePath Application\Debug\myproject.stm32
-python scripts\monitor-uart.py COM4 --done-marker "<<<DONE>>>"
+
+# 4b. Flash via UART
+pwsh scripts\flash-target.ps1 -ImagePath Application\Debug\myproject.stm32 -Port COM4
+
+# 5. Monitor serial output (run in a separate terminal, before or after flash)
+python scripts\monitor-uart.py COM4 --done-marker "<<<BENCHMARK_DONE>>>"
 ```
 
 ## 10. Error handling rules

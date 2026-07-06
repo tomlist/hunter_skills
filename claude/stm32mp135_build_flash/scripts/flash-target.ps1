@@ -4,6 +4,7 @@ param(
     [string]$Port = "USB1",
     [string]$RepoRoot = ".",
     [int]$Baud = 921600,
+    [string]$PartitionId = "0x01",
     [switch]$NoStart,
     [switch]$DryRun
 )
@@ -58,11 +59,11 @@ Write-Host "Programmer   : $programmerCli"
 # Build CLI arguments
 # -------------------------------------------------------------------
 if ($Port -eq "USB1") {
-    $cliArgs = @("-c", "port=USB1", "-w", "test.stm32", "0xC0000000")
-    if (-not $NoStart) { $cliArgs += "-rst" }
+    $cliArgs = @("-c", "port=USB1", "-d", "test.stm32", $PartitionId)
+    if (-not $NoStart) { $cliArgs += @("-g", $PartitionId) }
 } else {
-    $cliArgs = @("-c", "port=$Port", "-br", "$Baud", "-w", "test.stm32", "0xC0000000")
-    if (-not $NoStart) { $cliArgs += "-rst" }
+    $cliArgs = @("-c", "port=$Port br=$Baud", "-d", "test.stm32", $PartitionId)
+    if (-not $NoStart) { $cliArgs += @("-g", $PartitionId) }
 }
 
 Write-Host "CLI command  : $programmerCli $($cliArgs -join ' ')"
