@@ -1,3 +1,15 @@
+2026-07-06  hunter — feat(changelog): add changelog skill and sync local skill updates
+  + claude/changelog/SKILL.md
+  M claude/go/SKILL.md
+  - claude/stm32mp135_build_flash/do.ps1
+  - claude/stm32mp135_build_flash/do.sh
+  M claude/stm32mp135_build_flash/scripts/build-elf.ps1
+  + claude/stm32mp135_build_flash/scripts/build-stm32-image.ps1
+  + claude/stm32mp135_build_flash/scripts/flash-stm32-uart.py
+  M claude/stm32mp135_build_flash/scripts/flash-target.ps1
+  M claude/stm32mp135_build_flash/SKILL.md
+  + doc/changelog.txt
+
 2026-06-22  hunter — feat(stm32mp135): refactor to modular scripts with clone wrappers
   M CLAUDE.md
   M claude/go/SKILL.md
