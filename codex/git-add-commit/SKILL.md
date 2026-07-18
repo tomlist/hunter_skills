@@ -72,5 +72,14 @@ Rules:
 - For breaking changes, include a commit body line beginning with `BREAKING CHANGE:`.
 - Do not use vague messages like `update`, `changes`, or `fix bug`.
 
-Reference: https://platform.uno/docs/articles/uno-development/git-conventional-commits.html
+## Co-Authored-By Trailer
 
+Every commit message must end with a `Co-Authored-By` trailer that identifies the AI agent and model:
+
+```text
+Co-Authored-By: Codex <model-name>
+```
+
+Derive `<model-name>` from your current session context (e.g. "DeepSeek v4 Pro", "GPT-5 Codex"). Do not hardcode the model name — use the actual model you are running as.
+
+Reference: https://platform.uno/docs/articles/uno-development/git-conventional-commits.html
