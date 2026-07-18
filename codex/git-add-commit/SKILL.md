@@ -74,12 +74,10 @@ Rules:
 
 ## Co-Authored-By Trailer
 
-Every commit message must end with a `Co-Authored-By` trailer that identifies the AI agent and model:
+Every commit message must end with a `Co-Authored-By` trailer. Run `codex --version` to get the version string (e.g. "codex-cli 0.144.5"). Check your system prompt or agent context for the model name (e.g. "DeepSeek v4 Pro"). Do not hardcode these values. Format:
 
 ```text
-Co-Authored-By: Codex <model-name>
+Co-Authored-By: Codex v<version> <model>
 ```
-
-Derive `<model-name>` from your current session context (e.g. "DeepSeek v4 Pro", "GPT-5 Codex"). Do not hardcode the model name — use the actual model you are running as.
 
 Reference: https://platform.uno/docs/articles/uno-development/git-conventional-commits.html
