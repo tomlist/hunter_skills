@@ -92,9 +92,16 @@ tasks:
       start: "2026-06-22T17:00:00+08:00"
       finish: "2026-06-22T17:30:00+08:00"
   - id: 17
+    content: "同步本地的claude的skill到当前目录"
+    status: done
+    summary: "Synced ~/.claude/skills/ to ./claude/: added changelog.md and 7 new stm32mp135_build_flash scripts (build.ps1, do.ps1, flash.py, reset.py, monitor.py, gpio_control.py, config.yaml); updated stm32mp135 SKILL.md and stm32cubeide-build ps1; removed 8 stale modular scripts; updated CLAUDE.md inventory (changelog, cl rows; stm32mp135 description). Skipped __pycache__."
+    time:
+      start: "2026-09-09T19:50:39+08:00"
+      finish: "2026-09-09T19:53:35+08:00"
+  - id: 18
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-06-22T17:30:00+08:00"
+      start: "2026-09-09T19:53:35+08:00"
       finish: ""

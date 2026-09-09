@@ -1,0 +1,62 @@
+# ============================================================
+# STM32MP135 烧写 / 监控 / 复位 配置
+# 修改后无需重启任何东西，脚本每次运行都会重新读取。
+# 字段说明见每个 key 上方的注释。
+# ============================================================
+
+# ---------------- 烧写 (flash.py) ----------------
+flash:
+  # 烧写接口:
+  #   serial  = 串口烧写 (用下方 serial 节的参数)
+  #   usb     = USB 烧写 (用下方 usb 节的参数)
+  interface: serial
+
+  # 仅当 interface: serial 时生效
+  serial:
+    port: COM18           # 烧写串口号，如 COM3、COM18、COM6
+    baud: 921600          # 烧写波特率 (STM32MP13 ROM 引导程序默认 921600)
+    dtr: true             # 是否给 STM32_Programmer_CLI 传 dtr=high
+                          #   GK 板 (COM18): 保持 true
+                          #   SIP 板 (COM6): 改 false —— 断言 DTR 后烧写完全静默!
+    rts: true             # 是否传 rts=high (与 dtr 同规则)
+
+  # 仅当 interface: usb 时生效
+  usb:
+    port: USB1            # STM32_Programmer_CLI 的 USB 端口名
+
+  partition_id: "0x01"    # 烧写目标分区 ID (保持默认即可)
+  start_after_flash: true # true: 烧完自动启动固件 (CLI 发 -g)
+
+# ---------------- 监控 (monitor.py) ----------------
+monitor:
+  port: COM18             # 监控串口号 (通常与烧写串口相同)
+  baud: 115200            # 监控波特率 (必须与固件串口打印的波特率一致)
+  dtr: true               # 打开串口时是否断言 DTR
+                          #   GK 板 (COM18): 保持 true —— 不断言则串口完全静默
+                          #   SIP 板 (COM6): 改 false —— 断言则完全静默
+  rts: true               # 是否断言 RTS (一般与 dtr 保持一致)
+  timeout: 30             # 监控时长(秒)；0 = 无限 (Ctrl+C 停止)
+  log_dir: logs           # 日志保存目录 (相对当前工作目录)
+
+# ---------------- 复位 (reset.py) ----------------
+reset:
+  # 复位方式:
+  #   gpio      = 外部脚本复位: 通过 Raspberry Pi Debug Probe 的 GPIO
+  #               拉低 nRESET 再拉高 (必须是 low→延时→high 两步)
+  #   uart_rts  = 串口 RTS 复位: 在串口 RTS 线上产生释放→断言→释放脉冲
+  #               (适用于 RTS 接到 nRESET 的板子，无需 debugprobe)
+  method: gpio
+
+  # 仅当 method: gpio 时生效
+  gpio:
+    pin: 6                # debugprobe 连接 nRESET 的 GPIO 编号
+    assert_ms: 200        # 低电平脉宽 (ms)
+
+  # 仅当 method: uart_rts 时生效
+  uart_rts:
+    port: COM6            # 产生 RTS 脉冲用的串口
+    baud: 115200          # 任意波特率均可 (复位与波特率无关)
+    dtr: false            # 打开端口时 DTR 电平 (SIP 板必须 false)
+    active: true          # true = RTS 断言(有效)时为复位电平
+    assert_ms: 100        # RTS 断言 (复位保持) 时长 (ms)
+    settle_ms: 300        # 释放复位后等待时长 (ms)
