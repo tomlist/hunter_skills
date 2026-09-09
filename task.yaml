@@ -99,9 +99,16 @@ tasks:
       start: "2026-09-09T19:50:39+08:00"
       finish: "2026-09-09T19:53:35+08:00"
   - id: 18
+    content: "将codex目录的skill和claude目录的skill同步，以claude目录下的文件为准"
+    status: done
+    summary: "Synced claude/ to codex/ (claude as source): regenerated codex/stm32mp135_build_flash/SKILL.md from new claude version (backslash-to-slash path conversion only); copied 8 scripts (7 new stm32mp135 + updated stm32cubeide-build ps1); removed 8 stale stm32mp135 scripts; added codex/changelog.md (slash usage replaced with param list). Preserved Codex conversions: 14 converted SKILL.md files, cl/CODEX.md, codex git-add-commit Co-Authored-By rule."
+    time:
+      start: "2026-09-09T19:59:36+08:00"
+      finish: "2026-09-09T20:03:48+08:00"
+  - id: 19
     content: ""
     status: pending
     summary: ""
     time:
-      start: "2026-09-09T19:53:35+08:00"
+      start: "2026-09-09T20:03:48+08:00"
       finish: ""

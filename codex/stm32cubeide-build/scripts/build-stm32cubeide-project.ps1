@@ -38,19 +38,22 @@ function Get-BuildDirectory {
         $configurations += "Debug", "Release"
     }
 
-    foreach ($name in $configurations) {
-        $candidate = Join-Path $Root $name
-        $makefile = Join-Path $candidate "makefile"
-        if (Test-Path -LiteralPath $makefile -PathType Leaf) {
-            return [pscustomobject]@{
-                Name = $name
-                Path = (Resolve-Path -LiteralPath $candidate).Path
-                Makefile = (Resolve-Path -LiteralPath $makefile).Path
+    # Search: <Root>/Debug, <Root>/Release, <Root>/Application/Debug, <Root>/Application/Release
+    foreach ($prefix in @("", "Application")) {
+        foreach ($name in $configurations) {
+            $candidate = if ($prefix) { Join-Path $Root "$prefix\$name" } else { Join-Path $Root $name }
+            $makefile = Join-Path $candidate "makefile"
+            if (Test-Path -LiteralPath $makefile -PathType Leaf) {
+                return [pscustomobject]@{
+                    Name = "$prefix/$name".TrimStart('/')
+                    Path = (Resolve-Path -LiteralPath $candidate).Path
+                    Makefile = (Resolve-Path -LiteralPath $makefile).Path
+                }
             }
         }
     }
 
-    throw "No generated STM32CubeIDE build directory was found under '$Root'. Expected Debug/makefile or Release/makefile."
+    throw "No generated STM32CubeIDE build directory was found under '$Root'. Expected Debug/makefile, Release/makefile, Application/Debug/makefile, or Application/Release/makefile."
 }
 
 function Get-PreferredToolchainVersion {
