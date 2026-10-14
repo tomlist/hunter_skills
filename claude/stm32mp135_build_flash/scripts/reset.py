@@ -144,6 +144,10 @@ def reset_via_uart_rts(cfg: dict, dry_run: bool) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Reset the target board. Method comes from config.yaml.",
+        epilog="Example:\n"
+               "  python scripts/reset.py\n"
+               "  python scripts/reset.py --dry-run",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--config", help="Path to config.yaml (default: ./config.yaml, then script dir)")
     parser.add_argument("--dry-run", action="store_true", help="Print what would happen and exit")

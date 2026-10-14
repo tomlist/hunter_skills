@@ -96,6 +96,10 @@ def resolve_programmer_cli() -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Flash an STM32MP135 .stm32 image. Connection settings come from config.yaml.",
+        epilog="Example:\n"
+               "  python scripts/flash.py --image Application/Debug/my_project.stm32\n"
+               "  python scripts/flash.py --image build/fw.stm32 --no-start --dry-run",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--image", required=True, help="Path to the .stm32 image (relative to cwd)")
     parser.add_argument("--config", help="Path to config.yaml (default: ./config.yaml, then script dir)")

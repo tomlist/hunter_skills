@@ -1,0 +1,7 @@
+#Opt	Id	Name	Type	IP	Offset	Binary
+# eMMC wipe layout: writes erase_zeros.bin over the boot image + GPT area.
+# Offset is in 512-byte LBAs for mmc1; entry 0x5 is required by the CLI.
+P	0x1	fsbl-openbl	Binary	none	0x0	flash/External_Mem_Loader_A7.stm32
+P	0x3	fsbl-extfl	Binary	none	0x0	flash/MMC_Ext_Loader.bin
+P	0x4	fsbl-wipe	Binary	mmc1	0x0000000	erase_zeros.bin
+P	0x5	fsbl-wipe	Binary	mmc1	0x0001000	erase_zeros.bin

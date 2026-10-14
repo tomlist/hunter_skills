@@ -3,9 +3,9 @@ name: stm32mp135_build_flash
 description: >
   Build and flash STM32MP135 (Cortex-A7) bare-metal projects.
   Handles STM32CubeIDE makefile builds on Windows and Linux,
-  STM32 V2.0 header generation (.stm32), and UART/USB flashing via
-  STM32_Programmer_CLI (Windows only).
-  Use when asked to build, flash, or clone build/flash scripts into
+  STM32 V2.0 header generation (.stm32), UART/USB flashing via
+  STM32_Programmer_CLI (Windows only), and erasing the project eMMC.
+  Use when asked to build, flash, erase, or clone build/flash scripts into
   an STM32MP135 project directory.
 ---
 
@@ -31,6 +31,8 @@ The user may override this with these keywords:
 └── scripts/
     ├── build.ps1                  # Find tools → make → .stm32
     ├── flash.py                   # Flash via STM32_Programmer_CLI (settings from config.yaml)
+    ├── erase_emmc.ps1             # Erase the project eMMC (zeros over boot image + GPT)
+    ├── erase_emmc.tsv             # Wipe flashlayout template used by erase_emmc.ps1
     ├── reset.py                   # Reset target: debugprobe GPIO or serial RTS (from config.yaml)
     ├── do.ps1                     # One-shot pipeline: build → reset → flash → monitor
     ├── config.yaml                # Device settings: flash interface, monitor serial, reset method
@@ -42,6 +44,8 @@ The user may override this with these keywords:
 ```
 
 All scripts accept `-ProjectRoot <path>` (PowerShell) or run from the project directory (Python) to override the project location. When omitted, they fall back to `$PSScriptRoot\..` (the directory above where the script lives).
+
+Each script prints its own usage: `pwsh -File <script>.ps1 -Help` (build, do, erase_emmc) or `python <script>.py --help` (flash, monitor, reset). `gpio_control.py` prints its command list when run without arguments.
 
 ## 3. Configuration file (config.yaml)
 
@@ -147,7 +151,49 @@ Parameters:
 - `--no-start` — flash only, do not start target
 - `--dry-run` — print the command and exit
 
-## 7. Monitor UART output
+## 7. Erase the eMMC (optional, destructive)
+
+Wipes a bare-metal project's eMMC so the ROM falls back to serial boot — use it to
+clear a stale image or a leftover OpenSTLinux GPT before flashing.
+
+```
+pwsh -ExecutionPolicy Bypass -File "<skill_dir>\scripts\erase_emmc.ps1" -ProjectRoot "<cwd>" [-Port usb1] [-SizeMB 2] [-Layout <tsv>] [-DryRun]
+```
+
+What it does:
+
+1. Requires the ST ext-loader binaries in `<project>\flash\`: `External_Mem_Loader_A7.stm32` and `MMC_Ext_Loader.bin` (from the STM32CubeMP13 package; the script reports the exact source path if they are missing).
+2. Uses `<project>\erase_emmc.tsv`; when the project has none it copies the template shipped next to the script (`<skill_dir>\scripts\erase_emmc.tsv`) and re-derives entry `0x5`'s offset from `-SizeMB`. Entry `0x5` must exist — the CLI errors when that ID is absent.
+3. Generates `<project>\erase_zeros.bin` (`-SizeMB`, default 2 MiB) — the payload the layout references — and writes it twice: at LBA 0 and LBA `SizeMB*2048`, covering the first `2 × SizeMB` MiB (default 4 MiB): the GPT (LBA 0..33) plus the boot image at LBA 0.
+4. Runs `STM32_Programmer_CLI -c port=<port> br=<baud> dtr=high -w <tsv>`.
+
+Both files matter: the layout and the zeros payload must sit side by side (the layout references `erase_zeros.bin` by relative path). Driving the CLI by hand therefore needs both, and the zeros file has to be created:
+
+```powershell
+[System.IO.File]::WriteAllBytes("erase_zeros.bin", [byte[]]::new(2MB))   # matches the template
+STM32_Programmer_CLI -c port=COM18 -w erase_emmc.tsv
+```
+
+Parameters:
+- `-ProjectRoot <path>` — project root (required when running from the skill dir)
+- `-Port` — `COM<n>` (default COM18) or `usb1`; USB DFU works with this utility
+- `-SizeMB` — size of each zeros block (default 2; total wiped area is twice this)
+- `-Layout <tsv>` — use a specific layout instead of `<project>\erase_emmc.tsv`
+- `-DryRun` — print what would happen and exit
+
+Why zeros instead of a real erase:
+
+- `STM32_Programmer_CLI`'s `-e/--erase` is documented as "Not supported for STM32MP".
+- The flashlayout erase option (`Opt = EPD`/`PED` with `Binary = none`, the form the OpenSTLinux flow uses) is **rejected by this bare-metal ext-loader utility** — verified on hardware 2026-10-13: the CLI drops the partition and fails with `Partition 0x04 skipped` / `Error: Parition 0x4 not found in TSV File`.
+- Writing zeros through the normal write path has the same effect on the ROM. For a true eMMC erase, have the firmware issue CMD35/CMD36/CMD38 itself.
+
+Constraints:
+
+- The board must **already be offering its bootloader** (boot pins b000 = serial boot, or an eMMC that is empty/invalid). A board that boots a valid image cannot be reached by this flow — change the boot pins or have the firmware erase itself.
+- Only the front of the device is overwritten; deeper stale data (e.g. an old rootfs) survives but cannot boot.
+- After erasing, a normal build+flash run works without touching the boot pins.
+
+## 8. Monitor UART output
 
 ```
 python <skill_dir>\scripts\monitor.py [--config <path>] [-t <timeout>] [-o <logdir>]
@@ -160,7 +206,7 @@ Parameters:
 - `-t`, `--timeout` — seconds to monitor, 0 = forever (default: from config)
 - `-o`, `--logdir` — log directory (default: from config)
 
-## 8. Full pipeline: `do.ps1`
+## 9. Full pipeline: `do.ps1`
 
 `do.ps1` runs the complete build → reset → flash → monitor cycle in one command:
 
@@ -182,18 +228,18 @@ The script auto-discovers the `.stm32` artifact name from the makefile, so it wo
 
 If any step fails, the script stops immediately.
 
-## 9. Platform rules
+## 10. Platform rules
 
 - `build.ps1` runs on both Windows and Linux.
 - `flash.py` runs on **Windows only** (requires `STM32_Programmer_CLI.exe`). If the platform is Linux, report that flashing is not supported and stop.
 - `gpio_control.py`, `reset.py` and `monitor.py` are cross-platform. `reset.py`/`monitor.py` require Python + pyserial; the `gpio` reset method additionally requires pyusb + debug probe.
 
-## 10. Verify results
+## 11. Verify results
 
 - Check command exit codes
 - Confirm the `.stm32` artifact exists alongside the `.elf` when the task requires image generation
 
-## 11. Clone mode
+## 12. Clone mode
 
 Clone mode copies the scripts into `<project-root>\scripts\` so engineers can run them without the skill.
 
@@ -204,6 +250,8 @@ Clone mode copies the scripts into `<project-root>\scripts\` so engineers can ru
 └── scripts/
     ├── build.ps1
     ├── flash.py
+    ├── erase_emmc.ps1          ← Erase the eMMC (zeros over boot image + GPT)
+    ├── erase_emmc.tsv          ← Wipe layout template (erase_emmc.ps1 uses it)
     ├── reset.py                ← Reset: debugprobe GPIO or serial RTS
     ├── do.ps1                  ← One-shot pipeline (build→reset→flash→monitor)
     ├── config.yaml             ← Device settings — EDIT THIS per board
@@ -240,9 +288,13 @@ python scripts\monitor.py
 
 # Build + flash only, no monitor
 .\scripts\do.ps1 -Clean -NoMonitor
+
+# Erase the eMMC (destructive; board must be in serial/DFU boot)
+.\scripts\erase_emmc.ps1 -DryRun
+.\scripts\erase_emmc.ps1 -Port usb1
 ```
 
-## 12. Error handling
+## 13. Error handling
 
 - If `STM32_Programmer_CLI.exe` is not on PATH: report it, stop, do not guess an install path.
 - If no makefile is found under `Debug/` or `Release/`: report that the project must be built from STM32CubeIDE first to generate the makefile.

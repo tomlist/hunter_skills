@@ -71,6 +71,10 @@ def load_monitor_config(path: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Monitor STM32 UART output. Connection settings come from config.yaml.",
+        epilog="Example:\n"
+               "  python scripts/monitor.py -t 60\n"
+               "  python scripts/monitor.py -t 0 -o logs",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--config", help="Path to config.yaml (default: ./config.yaml, then script dir)")
     parser.add_argument("-t", "--timeout", type=float, default=None,

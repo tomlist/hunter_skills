@@ -2,8 +2,34 @@ param(
     [string]$Config = "Debug",
     [switch]$Clean,
     [switch]$DryRun,
+    [switch]$Help,
     [string]$ProjectRoot
 )
+
+if ($Help) {
+    @"
+build.ps1 - build an STM32MP135 CubeIDE project and generate the .stm32 image
+
+Usage:
+  pwsh -File build.ps1 [-ProjectRoot <path>] [-Config Debug|Release] [-Clean] [-DryRun]
+
+Parameters:
+  -ProjectRoot <path>  Project root (default: the directory above this script)
+  -Config <name>       Build configuration: Debug (default) or Release
+  -Clean               Clean before building
+  -DryRun              Print what would happen, then exit
+  -Help                Show this help
+
+Steps:
+  1. locate arm-none-eabi-gcc and make
+  2. find the build directory (Application\<Config>\ or <Config>\)
+  3. optionally clean
+  4. rebuild objects.list from the subdir.mk files
+  5. run make
+  6. objcopy the .elf and add the ST V2.0 header -> <project>.stm32
+"@
+    exit 0
+}
 
 $ErrorActionPreference = "Stop"
 
